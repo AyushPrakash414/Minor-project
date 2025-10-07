@@ -20,7 +20,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# TF Serving REST API endpoint
 TF_SERVING_ENDPOINT = "http://localhost:8501/v1/models/potatoes_model:predict"
 
 CLASS_NAMES = ["Early Blight", "Late Blight", "Healthy"]
@@ -37,15 +36,15 @@ def read_file_as_image(data) -> np.ndarray:
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
-    # Preprocess image
+    
     image = read_file_as_image(await file.read())
     img_batch = np.expand_dims(image, 0) 
 
-    # Prepare JSON for TF Serving
+    
     json_data = {"instances": img_batch.tolist()}
 
     try:
-        # Send request to TF Serving
+    
         response = requests.post(TF_SERVING_ENDPOINT, json=json_data)
         response.raise_for_status()
         prediction = np.array(response.json()["predictions"][0])
