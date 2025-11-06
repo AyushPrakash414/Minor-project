@@ -70,113 +70,112 @@ The system provides real-time predictions through an intuitive web interface wit
 - **Translation API** - Dynamic text translation with fallback mechanisms
 - **Model Versioning** - Support for multiple model versions
 
+### 🤖 AI Chatbot Features
+- **Ollama + Llama 3.2** - Local AI assistant for agricultural advice
+- **Context-Aware** - Knows disease predictions and provides specific treatment recommendations
+- **Bilingual Support** - Responds in English or Hindi based on user preference
+- **Conversation Memory** - Maintains chat history within session for contextual responses
+- **Quick Replies** - Pre-defined questions for instant answers
+- **100% Free & Private** - No API costs, data stays local, works offline
+
 ---
 
 ## 🏗️ Architecture
 
+### Modular Separated Architecture
+
 ```
+┌─────────────────────────────────────────────────────────┐
+│                      Web Browser                         │
+│  ┌──────────────────┐       ┌────────────────────┐     │
+│  │  index.html      │       │  chatbot.html      │     │
+│  │  (Main App)      │◄─────►│  (iframe)          │     │
+│  └────────┬─────────┘       └─────────┬──────────┘     │
+└───────────┼───────────────────────────┼────────────────┘
+            │                           │
+            │ /predict                  │ /chat
+            │ /translate                │ /chat/clear
+            ▼                           ▼
+┌───────────────────────────────────────────────────────┐
+│              FastAPI Server (Port: 8000)              │
+│  ┌──────────────────┐       ┌──────────────────┐     │
+│  │   main.py        │       │   chatbot.py     │     │
+│  │   (Core API)     │◄──────┤   (AI Module)    │     │
+│  │                  │import │                  │     │
+│  │ • /predict       │       │ • /chat          │     │
+│  │ • /translate     │       │ • /chat/clear    │     │
+│  │ • /ping          │       │ • Session Mgmt   │     │
+│  └────┬─────────────┘       └─────────┬────────┘     │
+└───────┼──────────────────────────────┼──────────────┘
+        │                              │
+        ▼                              ▼
+┌─────────────────┐          ┌──────────────────┐
+│  TensorFlow     │          │  Ollama + Llama  │
+│  Serving        │          │  (Port: 11434)   │
+│  (Port: 8501)   │          │                  │
+│  • CNN Model    │          │  • Context-aware │
+│  • Batch Pred   │          │  • Bilingual     │
+└─────────────────┘          └──────────────────┘
+        │
+        ▼
 ┌─────────────────┐
-│   Web Browser   │
-│  (Frontend UI)  │
-└────────┬────────┘
-         │ HTTP Request (Image Upload)
-         ▼
-┌─────────────────┐
-│  FastAPI Server │
-│  (Port: 8000)   │
-│                 │
-│  - /predict     │──┐
-│  - /translate   │  │
-│  - /ping        │  │
-└─────────────────┘  │
-         │           │
-         │           │
-         ▼           ▼
-┌─────────────────┐ ┌──────────────────┐
-│ TensorFlow      │ │  Deep Translator │
-│ Serving         │ │  (Google/Libre)  │
-│ (Port: 8501)    │ └──────────────────┘
-│                 │
-│ - Model: CNN    │
-│ - Version: 1-2  │
+│  Deep Translator│
+│  (Google/Libre) │
 └─────────────────┘
 ```
 
 ### Component Breakdown
 
-1. **Frontend Layer**
-   - Vanilla JavaScript for lightweight, fast interactions
-   - HTML5/CSS3 with modern design patterns
-   - Font Awesome icons for visual enhancement
+#### **Frontend Layer** (Separated)
+1. **`index.html`** - Main Application
+   - Disease detection interface
+   - Image upload and preview
+   - Results display
+   - Embeds chatbot via iframe
 
-2. **Backend Layer**
-   - FastAPI for high-performance async API
-   - TensorFlow Serving for model inference
-   - Deep Translator for multi-language support
+2. **`chatbot.html`** - Chatbot Component
+   - Standalone chat UI
+   - Can be embedded anywhere
+   - Communicates via `postMessage`
 
-3. **ML Pipeline**
+#### **Backend Layer** (Modular)
+1. **`main.py`** - Core API
+   - Disease prediction (`/predict`)
+   - Text translation (`/translate`)
+   - Health check (`/ping`)
+   - Imports chatbot module
+
+2. **`chatbot.py`** - AI Chat Module
+   - Chat endpoint (`/chat`)
+   - Clear history (`/chat/clear`)
+   - Ollama integration
+   - Session management
+
+#### **ML Pipeline**
    - TensorFlow 2.x CNN model
+   - TensorFlow Serving for inference
    - Image preprocessing (256x256 RGB)
    - Batch prediction support
 
+#### **AI Assistant**
+   - Ollama + Llama 3.2 (local LLM)
+   - Context-aware responses
+   - Bilingual support (English/Hindi)
+   - Conversation memory
+
 ---
 
+
 ## 📁 Project Structure
-
-```
-Minor-project/
-│
-├── 📓 model-training.ipynb       # Jupyter notebook for model training
-├── ⚙️ models.config               # TensorFlow Serving configuration
-├── 📖 README.md                   # Project documentation (this file)
-│
-├── 🗂️ Backend server/
-│   ├── main.py                   # FastAPI application entry point
-│   └── main-tf-serving.py        # TensorFlow Serving integration
-│
-├── 🗂️ PlantVillage/              # Raw dataset (unprocessed)
-│   ├── Potato___Early_blight/
-│   ├── Potato___healthy/
-│   └── Potato___Late_blight/
-│
-├── 🗂️ PlantVillage_split/        # Processed dataset (train/val/test split)
-│   ├── Training/                 # 70% of data
-│   │   ├── Potato___Early_blight/
-│   │   ├── Potato___healthy/
-│   │   └── Potato___Late_blight/
-│   ├── Validation/               # 15% of data
-│   │   ├── Potato___Early_blight/
-│   │   ├── Potato___healthy/
-│   │   └── Potato___Late_blight/
-│   └── Testing/                  # 15% of data
-│       ├── Potato___Early_blight/
-│       ├── Potato___healthy/
-│       └── Potato___Late_blight/
-│
-├── 🗂️ potato-disease-frontend/   # Web interface
-│   └── index.html                # Single-page application
-│
-└── 🗂️ saved_models/              # Trained model artifacts
-    ├── 1/                        # Model version 1
-    │   ├── saved_model.pb
-    │   ├── fingerprint.pb
-    │   ├── variables/
-    │   └── assets/
-    └── 2/                        # Model version 2
-        ├── saved_model.pb
-        ├── fingerprint.pb
-        ├── variables/
-        └── assets/
-```
-
-### Key Files Description
 
 | File | Purpose |
 |------|---------|
 | `model-training.ipynb` | Complete ML pipeline: data preprocessing, model architecture, training, evaluation |
-| `main.py` | FastAPI server with `/predict` and `/translate` endpoints |
+| `main.py` | Core FastAPI server (prediction, translation, health check) - imports chatbot module |
+| `chatbot.py` | **NEW** - AI chatbot module with Ollama integration (separated for modularity) |
 | `models.config` | TensorFlow Serving model registry configuration |
-| `index.html` | Frontend application with bilingual UI and image upload |
+| `index.html` | Main frontend application with disease detection UI |
+| `chatbot.html` | **NEW** - Standalone chatbot component (embedded via iframe) |
 | `saved_models/` | Serialized TensorFlow models ready for serving |
 
 ---
@@ -195,6 +194,7 @@ Minor-project/
 - **Pillow (PIL)** - Image processing
 - **Deep Translator** - Multi-language translation
 - **TensorFlow Serving** - Model serving infrastructure
+- **Ollama + Llama 3.2** - Local AI chatbot (optional)
 
 ### Frontend
 - **HTML5** - Semantic markup
@@ -210,7 +210,7 @@ Minor-project/
 ---
 
 ## 🚀 Installation
-
+> 
 ### Prerequisites
 
 Ensure you have the following installed:
@@ -218,6 +218,7 @@ Ensure you have the following installed:
 - pip (Python package manager)
 - Docker (for TensorFlow Serving)
 - Git
+- Ollama (optional, for AI chatbot)
 
 ### Step 1: Clone the Repository
 
@@ -271,6 +272,10 @@ docker run -d --name potato_model_server \
 
 ### Step 6: Start Backend Server
 
+> **Note**: The backend now consists of two modules:
+> - `main.py` - Core API (automatically imports chatbot module)
+> - `chatbot.py` - AI chatbot endpoints
+
 ```bash
 cd "Backend server"
 python main.py
@@ -278,9 +283,20 @@ python main.py
 
 The API will be available at `http://localhost:8000`
 
+**Verify both modules loaded**:
+```bash
+# Test core API
+curl http://localhost:8000/ping
+
+# Test chatbot API (if Ollama installed)
+curl -X POST http://localhost:8000/chat -H "Content-Type: application/json" -d '{"message":"Hello"}'
+```
+
 ### Step 7: Launch Frontend
 
-Open `potato-disease-frontend/index.html` in your browser, or use a local server:
+> **Note**: The frontend now consists of two files:
+> - `index.html` - Main application (embeds chatbot via iframe)
+> - `chatbot.html` - Chatbot component (loads independently)
 
 ```bash
 # Using Python's built-in server
@@ -288,7 +304,162 @@ cd potato-disease-frontend
 python -m http.server 5500
 ```
 
-Access the application at `http://localhost:5500`
+Access the application at `http://localhost:5500/index.html`
+
+**Both components will load automatically**:
+- Main app: Disease detection interface
+- Chatbot: Green button in bottom-right corner (if Ollama installed)
+
+### Step 8: Set Up AI Chatbot (Optional but Recommended)
+
+> **Why Use the AI Chatbot?**
+> - Get instant answers about potato diseases
+> - Receive personalized treatment recommendations based on your predictions
+> - Learn prevention methods and farming best practices
+> - Completely **FREE** - no API costs (runs locally with Ollama)
+> - **100% Private** - your data never leaves your machine
+> - Works **offline** after initial model download
+
+#### 8.1 Install Ollama
+
+Ollama is a free, open-source tool that lets you run AI models locally on your computer.
+
+**Windows:**
+1. Download installer from https://ollama.ai/download
+2. Run the installer (requires administrator privileges)
+3. Ollama will start automatically in the background
+
+**macOS:**
+```bash
+curl -fsSL https://ollama.ai/install.sh | sh
+```
+
+**Linux:**
+```bash
+curl -fsSL https://ollama.ai/install.sh | sh
+```
+
+**Verify Installation:**
+```bash
+# Check if Ollama is running
+ollama --version
+
+# Should output something like: ollama version 0.1.x
+```
+
+#### 8.2 Download Llama 3.2 Model
+
+```bash
+ollama pull llama3.2
+```
+
+**Download Details:**
+- Model Size: ~2GB
+- Parameters: 3 billion
+- Download Time: 5-10 minutes (depending on internet speed)
+- Disk Space Required: 2.5GB
+
+**Alternative Models** (if you have limited resources):
+```bash
+# Smaller, faster model (1GB)
+ollama pull llama3.2:1b
+
+# Larger, more accurate model (4.7GB)
+ollama pull llama3.2:7b
+```
+
+#### 8.3 Start Ollama Server
+
+Ollama needs to be running in the background for the chatbot to work.
+
+**Windows:** Ollama starts automatically after installation. Check system tray for Ollama icon.
+
+**macOS/Linux:**
+```bash
+ollama serve
+```
+
+**Verify Server is Running:**
+```bash
+curl http://localhost:11434/api/version
+```
+
+Should return: `{"version":"0.1.x"}`
+
+#### 8.4 Verify Chatbot Integration
+
+1. **Start Backend** (if not already running):
+   ```bash
+   cd "Backend server"
+   python main.py
+   ```
+
+2. **Open Frontend**:
+   - Navigate to `http://localhost:5500/index.html`
+   - Look for a **green circular button** in the bottom-right corner
+   - If you don't see it, hard refresh: `Ctrl + Shift + R`
+
+3. **Test the Chatbot**:
+   - Click the green button to open the chat window
+   - Type: "Hello, are you working?"
+   - You should get a response within 2-3 seconds
+
+4. **Test Context-Awareness**:
+   - Upload a potato leaf image with disease
+   - Click "Detect Disease"
+   - Open chatbot and ask: "How do I treat this disease?"
+   - The chatbot will provide specific advice based on the detected disease
+
+#### 8.5 Chatbot Features & Usage
+
+**What Can the Chatbot Do?**
+
+1. **Disease Information**
+   - "What is Early Blight?"
+   - "What causes Late Blight?"
+   - "How can I identify healthy potato plants?"
+
+2. **Treatment Advice**
+   - "How do I treat Early Blight?"
+   - "What fungicides work for Late Blight?"
+   - "Are there organic treatment options?"
+
+3. **Prevention Methods**
+   - "How can I prevent potato diseases?"
+   - "What are best practices for potato farming?"
+   - "When should I apply fungicides?"
+
+4. **Context-Aware Recommendations**
+   - After detecting a disease, ask: "What should I do?"
+   - The chatbot knows your prediction and provides specific guidance
+
+5. **Bilingual Support**
+   - Switch language in main app (English/Hindi)
+   - Chatbot automatically responds in selected language
+
+**Quick Reply Buttons:**
+- "What is this disease?" - Get detailed explanation
+- "How to treat it?" - Treatment recommendations
+- "Prevention tips" - Prevent future infections
+
+**Conversation Memory:**
+- Chatbot remembers your conversation within the same session
+- Ask follow-up questions naturally
+- Clear history anytime with the "Clear" button
+
+#### 8.6 Chatbot Troubleshooting
+
+**Common Issues:**
+
+- **Button not appearing**: Check backend and Ollama are running, refresh browser (`Ctrl + Shift + R`)
+- **Cannot connect**: Verify Ollama is running: `curl http://localhost:11434/api/version`
+- **Slow responses**: Use smaller model `ollama pull llama3.2:1b`
+- **Messages not sending**: Ensure backend server is running, check browser console
+
+**Advanced Options:**
+- Change model in `Backend server/chatbot.py` (line 18-19)
+- Customize system prompt for different chatbot personality
+- Adjust `max_tokens` for response length
 
 ---
 
@@ -311,6 +482,12 @@ Access the application at `http://localhost:5500`
 4. **Switch Language**
    - Click "हिन्दी" button for Hindi interface
    - Click "English" to switch back
+
+5. **Use AI Chatbot** (if Ollama installed)
+   - Click the green chat button (bottom-right)
+   - Ask questions about detected diseases
+   - Get treatment recommendations and farming advice
+   - Chatbot responds in selected language (English/Hindi)
 
 ### Keyboard Shortcuts
 
@@ -406,6 +583,66 @@ POST /translate
 - `en` - English
 - `hi` - Hindi
 - (Extensible to 100+ languages via Google Translator)
+
+---
+
+#### 4. AI Chat
+
+```http
+POST /chat
+```
+
+**Request:**
+```json
+{
+  "message": "What is Early Blight?",
+  "session_id": "session_123",
+  "disease_context": {
+    "class": "Early Blight",
+    "confidence": 0.87
+  },
+  "language": "en"
+}
+```
+
+**Response:**
+```json
+{
+  "response": "Early Blight is a fungal disease caused by Alternaria solani. It causes dark brown spots with concentric rings on leaves...",
+  "session_id": "session_123"
+}
+```
+
+**Parameters:**
+- `message` (string): User's question
+- `session_id` (string, optional): Session identifier for conversation continuity
+- `disease_context` (object, optional): Recent prediction context for personalized advice
+- `language` (string): "en" or "hi"
+
+**Note:** Requires Ollama running on `localhost:11434` with Llama 3.2 model installed.
+
+---
+
+#### 5. Clear Chat History
+
+```http
+POST /chat/clear
+```
+
+**Request:**
+```json
+{
+  "session_id": "session_123"
+}
+```
+
+**Response:**
+```json
+{
+  "status": "cleared",
+  "session_id": "session_123"
+}
+```
 
 ---
 
@@ -637,9 +874,10 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ## 👥 Authors
 
-**Sarvagya**
-- GitHub: [@sarvagya-019](https://github.com/sarvagya-019)
-- Repository: [Minor-project](https://github.com/sarvagya-019/Minor-project)
+**Sarvagya Gupta** : **Sarwagya Shah** : **Ayush Prakash Tiwari**
+- GitHub: [@sarvagya-019](https://github.com/sarvagya-019) , [@AyushPrakash414](https://github.com/AyushPrakash414) ,  [@SARWAGYASHAH](https://github.com/SARWAGYASHAH) 
+
+- Repository: [Minor-project](https://github.com/AyushPrakash414/Minor-project.git)
 
 ---
 
@@ -649,16 +887,6 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 - **TensorFlow Team** - For the excellent deep learning framework
 - **FastAPI** - For the modern, fast web framework
 - **Cornell University** - For pioneering plant disease recognition research
-- **Open Source Community** - For continuous support and contributions
-
----
-
-## 📧 Contact
-
-For questions, issues, or collaboration opportunities:
-
-- **Email**: [Create an issue](https://github.com/sarvagya-019/Minor-project/issues)
-- **GitHub Issues**: [Report bugs or request features](https://github.com/sarvagya-019/Minor-project/issues/new)
 
 ---
 
@@ -666,7 +894,6 @@ For questions, issues, or collaboration opportunities:
 
 - [ ] Support for additional potato diseases (Blackleg, Common Scab)
 - [ ] Mobile app (React Native/Flutter)
-- [ ] Treatment recommendations based on disease type
 - [ ] Integration with weather APIs for risk prediction
 - [ ] User authentication and prediction history
 - [ ] Batch image processing
@@ -674,6 +901,8 @@ For questions, issues, or collaboration opportunities:
 - [ ] Multi-crop support (tomato, pepper, etc.)
 - [ ] Real-time camera capture for mobile devices
 - [ ] Offline model support with TensorFlow Lite
+- [ ] Voice input for chatbot
+- [ ] Custom knowledge base for region-specific advice
 
 ---
 

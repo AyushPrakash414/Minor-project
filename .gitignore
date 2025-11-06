@@ -1,3 +1,64 @@
-training
-PlantVillage
-PlantVillage_split
+# Dataset folders (large files)
+Training dataset/
+PlantVillage_split/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.Python
+venv/
+env/
+ENV/
+.venv
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb_checkpoints/
+
+# TensorFlow/Keras
+saved_models/*
+!saved_models/.gitkeep
+*.h5
+*.pb
+*.ckpt
+*.index
+*.meta
+*.data-*
+checkpoint
+
+# Logs
+*.log
+logs/
+*.out
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment variables
+.env
+.env.local
+
+# Docker
+*.tar
+*.tar.gz
+
+# Temporary files
+*.tmp
+*.temp
+tmp/
+temp/
