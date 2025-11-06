@@ -13,7 +13,13 @@ from deep_translator.exceptions import NotValidPayload, RequestError
 from typing import List
 import html
 
+# Import chatbot router
+from chatbot import router as chatbot_router
+
 app = FastAPI()
+
+# Include chatbot routes
+app.include_router(chatbot_router)
 
 origins = [
     "http://localhost",
