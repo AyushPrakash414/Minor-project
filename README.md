@@ -1,6 +1,6 @@
-<div align="center">
-
 # 🥔 Potato Disease Detection System
+
+<div align="center">
 
 <p align="center">
   <img src="https://img.shields.io/badge/TensorFlow-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white" alt="TensorFlow"/>
@@ -14,24 +14,6 @@
 [Features](#-features) • [Architecture](#-architecture) • [Installation](#-installation) • [Usage](#-usage) • [API](#-api-documentation) • [Model](#-model-training) • [Contributing](#-contributing)
 
 </div>
-
----
-
-## 📋 Table of Contents
-
-- [Overview](#-overview)
-- [Features](#-features)
-- [Architecture](#-architecture)
-- [Project Structure](#-project-structure)
-- [Tech Stack](#-tech-stack)
-- [Installation](#-installation)
-- [Usage](#-usage)
-- [API Documentation](#-api-documentation)
-- [Model Training](#-model-training)
-- [Dataset](#-dataset)
-- [Deployment](#-deployment)
-- [Contributing](#-contributing)
-- [License](#-license)
 
 ---
 
@@ -51,7 +33,7 @@ The system provides real-time predictions through an intuitive web interface wit
 
 ### 🎯 Core Capabilities
 - **Real-time Disease Detection** - Upload potato leaf images and get instant predictions
-- **High Accuracy Model** - CNN-based architecture trained on 2,000+ images
+- **High Accuracy Model** - CNN-based architecture achieving **94.4% test accuracy**
 - **Multi-class Classification** - Detects Early Blight, Late Blight, and Healthy plants
 - **Confidence Scoring** - Provides prediction confidence percentage
 
@@ -70,7 +52,7 @@ The system provides real-time predictions through an intuitive web interface wit
 - **Translation API** - Dynamic text translation with fallback mechanisms
 - **Model Versioning** - Support for multiple model versions
 
-### 🤖 AI Chatbot Features
+### 🤖 AI Chatbot Features (Optional)
 - **Ollama + Llama 3.2** - Local AI assistant for agricultural advice
 - **Context-Aware** - Knows disease predictions and provides specific treatment recommendations
 - **Bilingual Support** - Responds in English or Hindi based on user preference
@@ -99,7 +81,7 @@ The system provides real-time predictions through an intuitive web interface wit
 ┌───────────────────────────────────────────────────────┐
 │              FastAPI Server (Port: 8000)              │
 │  ┌──────────────────┐       ┌──────────────────┐     │
-│  │   main.py        │       │   chatbot.py     │     │
+│  │   main_fixed.py  │       │   chatbot.py     │     │
 │  │   (Core API)     │◄──────┤   (AI Module)    │     │
 │  │                  │import │                  │     │
 │  │ • /predict       │       │ • /chat          │     │
@@ -124,59 +106,31 @@ The system provides real-time predictions through an intuitive web interface wit
 └─────────────────┘
 ```
 
-### Component Breakdown
-
-#### **Frontend Layer** (Separated)
-1. **`index.html`** - Main Application
-   - Disease detection interface
-   - Image upload and preview
-   - Results display
-   - Embeds chatbot via iframe
-
-2. **`chatbot.html`** - Chatbot Component
-   - Standalone chat UI
-   - Can be embedded anywhere
-   - Communicates via `postMessage`
-
-#### **Backend Layer** (Modular)
-1. **`main.py`** - Core API
-   - Disease prediction (`/predict`)
-   - Text translation (`/translate`)
-   - Health check (`/ping`)
-   - Imports chatbot module
-
-2. **`chatbot.py`** - AI Chat Module
-   - Chat endpoint (`/chat`)
-   - Clear history (`/chat/clear`)
-   - Ollama integration
-   - Session management
-
-#### **ML Pipeline**
-   - TensorFlow 2.x CNN model
-   - TensorFlow Serving for inference
-   - Image preprocessing (256x256 RGB)
-   - Batch prediction support
-
-#### **AI Assistant**
-   - Ollama + Llama 3.2 (local LLM)
-   - Context-aware responses
-   - Bilingual support (English/Hindi)
-   - Conversation memory
-
 ---
 
+## � Project Structure
 
-## 📁 Project Structure
-
-| File | Purpose |
-|------|---------|
-| `model-training.ipynb` | Complete ML pipeline: data preprocessing, model architecture, training, evaluation |
-| `main.py` | Core FastAPI server (prediction, translation, health check) - imports chatbot module |
-| `chatbot.py` | **NEW** - AI chatbot module with Ollama integration (separated for modularity) |
-| `models.config` | TensorFlow Serving model registry configuration |
-| `index.html` | Main frontend application with disease detection UI |
-| `chatbot.html` | **NEW** - Standalone chatbot component (embedded via iframe) |
-| `saved_models/` | Serialized TensorFlow models ready for serving |
+```
+Minor-project/
+├── backend/                      # FastAPI server
+│   ├── main_fixed.py            # Main backend (RUNNING - with normalization fix)
+│   ├── chatbot.py               # AI chatbot module
+│   └── .env.example             # Environment variables template
+├── frontend/                     # Web interface
+│   ├── index.html               # Main UI
+│   └── chatbot.html             # Chatbot UI
+├── models/                       # Trained models
+│   └── 3/                       # 94.4% accuracy model
+├── dataset/                      # Training images
+│   └── PlantVillage/
+│       ├── Potato___Early_blight/
+│       ├── Potato___Late_blight/
+│       └── Potato___healthy/
+├── model-training-improved.ipynb # Fixed training notebook
+├── models.config                # TensorFlow Serving config
+├── requirements.txt             # Python dependencies
+└── README.md                    # Project documentation
+```
 
 ---
 
@@ -186,7 +140,6 @@ The system provides real-time predictions through an intuitive web interface wit
 - **TensorFlow 2.x** - Deep learning framework
 - **Keras** - High-level neural networks API
 - **NumPy** - Numerical computing
-- **Matplotlib** - Visualization and plotting
 
 ### Backend
 - **FastAPI** - Modern async web framework
@@ -209,257 +162,60 @@ The system provides real-time predictions through an intuitive web interface wit
 
 ---
 
-## 🚀 Installation
-> 
+## 🚀 Installation & Setup
+
 ### Prerequisites
 
-Ensure you have the following installed:
 - Python 3.8 or higher
 - pip (Python package manager)
 - Docker (for TensorFlow Serving)
 - Git
 - Ollama (optional, for AI chatbot)
 
-### Step 1: Clone the Repository
+### Quick Start
 
-```bash
-git clone https://github.com/sarvagya-019/Minor-project.git
-cd Minor-project
-```
-
-### Step 2: Set Up Python Environment
-
-```bash
-# Create virtual environment
-python -m venv venv
-
-# Activate virtual environment
-# Windows
-venv\Scripts\activate
-# Linux/Mac
-source venv/bin/activate
-```
-
-### Step 3: Install Python Dependencies
-
-```bash
-pip install tensorflow fastapi uvicorn pillow numpy requests deep-translator python-multipart
-```
-
-### Step 4: Download Dataset
-
-The PlantVillage dataset is already included in the repository. If needed, you can download it from:
-- [PlantVillage Dataset on Kaggle](https://www.kaggle.com/datasets/arjuntejaswi/plant-village)
-
-### Step 5: Run TensorFlow Serving (Docker)
-
-```bash
-docker run -d --name potato_model_server ^
-  -p 8501:8501 ^
-  -v "%cd%/saved_models:/models/potatoes_model" ^
-  -e MODEL_NAME=potatoes_model ^
-  tensorflow/serving
-```
-
-**Linux/Mac:**
-```bash
-docker run -d --name potato_model_server \
-  -p 8501:8501 \
-  -v "$(pwd)/saved_models:/models/potatoes_model" \
-  -e MODEL_NAME=potatoes_model \
-  tensorflow/serving
-```
-
-### Step 6: Start Backend Server
-
-> **Note**: The backend now consists of two modules:
-> - `main.py` - Core API (automatically imports chatbot module)
-> - `chatbot.py` - AI chatbot endpoints
-
-```bash
-cd "Backend server"
-python main.py
-```
-
-The API will be available at `http://localhost:8000`
-
-**Verify both modules loaded**:
-```bash
-# Test core API
-curl http://localhost:8000/ping
-
-# Test chatbot API (if Ollama installed)
-curl -X POST http://localhost:8000/chat -H "Content-Type: application/json" -d '{"message":"Hello"}'
-```
-
-### Step 7: Launch Frontend
-
-> **Note**: The frontend now consists of two files:
-> - `index.html` - Main application (embeds chatbot via iframe)
-> - `chatbot.html` - Chatbot component (loads independently)
-
-```bash
-# Using Python's built-in server
-cd potato-disease-frontend
-python -m http.server 5500
-```
-
-Access the application at `http://localhost:5500/index.html`
-
-**Both components will load automatically**:
-- Main app: Disease detection interface
-- Chatbot: Green button in bottom-right corner (if Ollama installed)
-
-### Step 8: Set Up AI Chatbot (Optional but Recommended)
-
-> **Why Use the AI Chatbot?**
-> - Get instant answers about potato diseases
-> - Receive personalized treatment recommendations based on your predictions
-> - Learn prevention methods and farming best practices
-> - Completely **FREE** - no API costs (runs locally with Ollama)
-> - **100% Private** - your data never leaves your machine
-> - Works **offline** after initial model download
-
-#### 8.1 Install Ollama
-
-Ollama is a free, open-source tool that lets you run AI models locally on your computer.
-
-**Windows:**
-1. Download installer from https://ollama.ai/download
-2. Run the installer (requires administrator privileges)
-3. Ollama will start automatically in the background
-
-**macOS:**
-```bash
-curl -fsSL https://ollama.ai/install.sh | sh
-```
-
-**Linux:**
-```bash
-curl -fsSL https://ollama.ai/install.sh | sh
-```
-
-**Verify Installation:**
-```bash
-# Check if Ollama is running
-ollama --version
-
-# Should output something like: ollama version 0.1.x
-```
-
-#### 8.2 Download Llama 3.2 Model
-
-```bash
-ollama pull llama3.2
-```
-
-**Download Details:**
-- Model Size: ~2GB
-- Parameters: 3 billion
-- Download Time: 5-10 minutes (depending on internet speed)
-- Disk Space Required: 2.5GB
-
-**Alternative Models** (if you have limited resources):
-```bash
-# Smaller, faster model (1GB)
-ollama pull llama3.2:1b
-
-# Larger, more accurate model (4.7GB)
-ollama pull llama3.2:7b
-```
-
-#### 8.3 Start Ollama Server
-
-Ollama needs to be running in the background for the chatbot to work.
-
-**Windows:** Ollama starts automatically after installation. Check system tray for Ollama icon.
-
-**macOS/Linux:**
-```bash
-ollama serve
-```
-
-**Verify Server is Running:**
-```bash
-curl http://localhost:11434/api/version
-```
-
-Should return: `{"version":"0.1.x"}`
-
-#### 8.4 Verify Chatbot Integration
-
-1. **Start Backend** (if not already running):
+1. **Install Dependencies**
    ```bash
-   cd "Backend server"
-   python main.py
+   pip install -r requirements.txt
    ```
 
-2. **Open Frontend**:
-   - Navigate to `http://localhost:5500/index.html`
-   - Look for a **green circular button** in the bottom-right corner
-   - If you don't see it, hard refresh: `Ctrl + Shift + R`
+2. **Start TensorFlow Serving (Docker)**
+   ```powershell
+   # Windows
+   docker run -d -p 8501:8501 `
+     --mount type=bind,source=C:\Users\sarva\Downloads\Minor-project\models\3,target=/models/potatoes_model/1 `
+     -e MODEL_NAME=potatoes_model -t tensorflow/serving
+   ```
+   
+   ```bash
+   # Linux/Mac
+   docker run -d -p 8501:8501 \
+     --mount type=bind,source=$(pwd)/models/3,target=/models/potatoes_model/1 \
+     -e MODEL_NAME=potatoes_model -t tensorflow/serving
+   ```
 
-3. **Test the Chatbot**:
-   - Click the green button to open the chat window
-   - Type: "Hello, are you working?"
-   - You should get a response within 2-3 seconds
+3. **Start Ollama (Optional - for chatbot)**
+   ```bash
+   # Install from https://ollama.ai
+   ollama pull llama3.2
+   ollama serve
+   ```
 
-4. **Test Context-Awareness**:
-   - Upload a potato leaf image with disease
-   - Click "Detect Disease"
-   - Open chatbot and ask: "How do I treat this disease?"
-   - The chatbot will provide specific advice based on the detected disease
+4. **Start Backend**
+   ```bash
+   cd backend
+   python main_fixed.py
+   ```
 
-#### 8.5 Chatbot Features & Usage
+5. **Open Frontend**
+   - Open `frontend/index.html` in your browser
+   - Or use: `python -m http.server 5500` in frontend directory
 
-**What Can the Chatbot Do?**
-
-1. **Disease Information**
-   - "What is Early Blight?"
-   - "What causes Late Blight?"
-   - "How can I identify healthy potato plants?"
-
-2. **Treatment Advice**
-   - "How do I treat Early Blight?"
-   - "What fungicides work for Late Blight?"
-   - "Are there organic treatment options?"
-
-3. **Prevention Methods**
-   - "How can I prevent potato diseases?"
-   - "What are best practices for potato farming?"
-   - "When should I apply fungicides?"
-
-4. **Context-Aware Recommendations**
-   - After detecting a disease, ask: "What should I do?"
-   - The chatbot knows your prediction and provides specific guidance
-
-5. **Bilingual Support**
-   - Switch language in main app (English/Hindi)
-   - Chatbot automatically responds in selected language
-
-**Quick Reply Buttons:**
-- "What is this disease?" - Get detailed explanation
-- "How to treat it?" - Treatment recommendations
-- "Prevention tips" - Prevent future infections
-
-**Conversation Memory:**
-- Chatbot remembers your conversation within the same session
-- Ask follow-up questions naturally
-- Clear history anytime with the "Clear" button
-
-#### 8.6 Chatbot Troubleshooting
-
-**Common Issues:**
-
-- **Button not appearing**: Check backend and Ollama are running, refresh browser (`Ctrl + Shift + R`)
-- **Cannot connect**: Verify Ollama is running: `curl http://localhost:11434/api/version`
-- **Slow responses**: Use smaller model `ollama pull llama3.2:1b`
-- **Messages not sending**: Ensure backend server is running, check browser console
-
-**Advanced Options:**
-- Change model in `Backend server/chatbot.py` (line 18-19)
-- Customize system prompt for different chatbot personality
-- Adjust `max_tokens` for response length
+6. **Verify System**
+   ```bash
+   cd scripts
+   python system_status.py
+   ```
 
 ---
 
@@ -467,27 +223,12 @@ Should return: `{"version":"0.1.x"}`
 
 ### Web Interface
 
-1. **Open the Application**
-   - Navigate to `http://localhost:5500` (or open `index.html` directly)
-
-2. **Upload an Image**
-   - Click "Choose Image" or drag & drop a potato leaf image
-   - Supported formats: JPG, JPEG, PNG
-   - Maximum file size: 10MB
-
-3. **Get Prediction**
-   - Click "Detect Disease" button
-   - View results showing disease class and confidence percentage
-
-4. **Switch Language**
-   - Click "हिन्दी" button for Hindi interface
-   - Click "English" to switch back
-
-5. **Use AI Chatbot** (if Ollama installed)
-   - Click the green chat button (bottom-right)
-   - Ask questions about detected diseases
-   - Get treatment recommendations and farming advice
-   - Chatbot responds in selected language (English/Hindi)
+1. **Open Application** - Navigate to `http://localhost:5500/index.html`
+2. **Upload Image** - Click "Choose Image" or drag & drop a potato leaf image
+3. **Get Prediction** - Click "Detect Disease" button
+4. **View Results** - See disease class and confidence percentage
+5. **Switch Language** - Click "हिन्दी" for Hindi or "English" to switch back
+6. **Use AI Chatbot** - Click green button in bottom-right (if Ollama installed)
 
 ### Keyboard Shortcuts
 
@@ -500,46 +241,20 @@ Should return: `{"version":"0.1.x"}`
 
 ## 📡 API Documentation
 
-### Base URL
-```
-http://localhost:8000
-```
+### Base URL: `http://localhost:8000`
 
-### Endpoints
-
-#### 1. Health Check
-
+#### Health Check
 ```http
 GET /ping
 ```
 
-**Response:**
-```json
-"Hello, I am alive"
-```
-
----
-
-#### 2. Predict Disease
-
+#### Predict Disease
 ```http
 POST /predict
-```
+Content-Type: multipart/form-data
+Body: file (image)
 
-**Request:**
-- Content-Type: `multipart/form-data`
-- Body: `file` (image file)
-
-**cURL Example:**
-```bash
-curl -X POST "http://localhost:8000/predict" ^
-  -H "accept: application/json" ^
-  -H "Content-Type: multipart/form-data" ^
-  -F "file=@potato_leaf.jpg"
-```
-
-**Response:**
-```json
+Response:
 {
   "class": "Early Blight",
   "class_index": 0,
@@ -547,100 +262,31 @@ curl -X POST "http://localhost:8000/predict" ^
 }
 ```
 
-**Response Fields:**
-- `class` (string): Disease name or "Healthy"
-- `class_index` (integer): 0 = Early Blight, 1 = Late Blight, 2 = Healthy
-- `confidence` (float): Prediction confidence (0.0 to 1.0)
-
----
-
-#### 3. Translate Text
-
+#### Translate Text
 ```http
 POST /translate
-```
+Content-Type: application/json
 
-**Request:**
-```json
 {
   "texts": ["Hello", "World"],
   "target": "hi"
 }
-```
 
-**Response:**
-```json
+Response:
 {
   "translations": ["नमस्ते", "दुनिया"]
 }
 ```
 
-**Parameters:**
-- `texts` (array): List of strings to translate
-- `target` (string): Target language code (e.g., "hi" for Hindi, "en" for English)
-
-**Supported Languages:**
-- `en` - English
-- `hi` - Hindi
-- (Extensible to 100+ languages via Google Translator)
-
----
-
-#### 4. AI Chat
-
+#### AI Chat (Optional - Requires Ollama)
 ```http
 POST /chat
-```
+Content-Type: application/json
 
-**Request:**
-```json
 {
   "message": "What is Early Blight?",
   "session_id": "session_123",
-  "disease_context": {
-    "class": "Early Blight",
-    "confidence": 0.87
-  },
   "language": "en"
-}
-```
-
-**Response:**
-```json
-{
-  "response": "Early Blight is a fungal disease caused by Alternaria solani. It causes dark brown spots with concentric rings on leaves...",
-  "session_id": "session_123"
-}
-```
-
-**Parameters:**
-- `message` (string): User's question
-- `session_id` (string, optional): Session identifier for conversation continuity
-- `disease_context` (object, optional): Recent prediction context for personalized advice
-- `language` (string): "en" or "hi"
-
-**Note:** Requires Ollama running on `localhost:11434` with Llama 3.2 model installed.
-
----
-
-#### 5. Clear Chat History
-
-```http
-POST /chat/clear
-```
-
-**Request:**
-```json
-{
-  "session_id": "session_123"
-}
-```
-
-**Response:**
-```json
-{
-  "status": "cleared",
-  "session_id": "session_123"
 }
 ```
 
@@ -648,245 +294,119 @@ POST /chat/clear
 
 ## 🧠 Model Training
 
-### Dataset Preparation
+### Dataset
+- **Source**: PlantVillage Dataset (Cornell University)
+- **Total Images**: ~2,000
+- **Classes**: Early Blight, Late Blight, Healthy
+- **Split**: 70% Training, 15% Validation, 15% Testing
 
-The training pipeline automatically splits the PlantVillage dataset:
-
-- **Training Set**: 70% (1,400 images)
-- **Validation Set**: 15% (300 images)
-- **Testing Set**: 15% (300 images)
-
-### Model Architecture
-
-```python
-Input Layer (256x256x3)
-    ↓
-Conv2D (32 filters, 3x3) + ReLU
-    ↓
-MaxPooling2D (2x2)
-    ↓
-Conv2D (64 filters, 3x3) + ReLU
-    ↓
-MaxPooling2D (2x2)
-    ↓
-Conv2D (64 filters, 3x3) + ReLU
-    ↓
-MaxPooling2D (2x2)
-    ↓
-Flatten
-    ↓
-Dense (64 units) + ReLU
-    ↓
-Dense (3 units) + Softmax
+### Model Architecture (CNN)
 ```
+Input (256x256x3)
+  ↓
+Conv2D (32 filters) + ReLU + MaxPooling
+  ↓
+Conv2D (64 filters) + ReLU + MaxPooling
+  ↓
+Conv2D (64 filters) + ReLU + MaxPooling
+  ↓
+Flatten → Dense (64) + ReLU → Dense (3) + Softmax
+```
+
+### Performance Metrics
+
+| Metric | Value |
+|--------|-------|
+| Test Accuracy | 94.4% |
+| Precision | 94.52% |
+| Recall | 94.39% |
+| F1 Score | 94.33% |
+
+**Per-Class Accuracy:**
+- Early Blight: 98.7% (148/150)
+- Late Blight: 87.3% (131/150)
+- Healthy: 97.3% (142/146)
 
 ### Training Configuration
+- Batch Size: 32
+- Image Size: 256x256
+- Epochs: 100
+- Optimizer: Adam
+- Learning Rate: 0.001
+- Data Augmentation: Random flip, rotation
 
-- **Batch Size**: 32
-- **Image Size**: 256x256 pixels
-- **Epochs**: 50
-- **Optimizer**: Adam
-- **Loss Function**: Sparse Categorical Crossentropy
-- **Data Augmentation**: Random flip, rotation
-
-### Training the Model
-
-Open `model-training.ipynb` in Jupyter Notebook:
-
-```bash
-jupyter notebook model-training.ipynb
-```
-
-Run all cells sequentially to:
-1. Split the dataset
-2. Load and preprocess images
-3. Build CNN architecture
-4. Train the model
-5. Evaluate performance
-6. Save model to `saved_models/`
-
-### Model Versioning
-
-The system supports multiple model versions. Update `models.config` to switch versions:
-
-```plaintext
-model_config_list {
-  config {
-    name: 'potatoes_model'
-    base_path: '/Minor-project/saved_models/'
-    model_platform: 'tensorflow'
-    model_version_policy: {all: {}}
-  }
-}
-```
+### Retrain Model
+1. Open `model-training-improved.ipynb` in Google Colab
+2. Upload dataset or mount Google Drive
+3. Run all cells (~30-60 min with T4 GPU)
+4. Download model and place in `models/4/`
+5. Update `models.config` and restart TensorFlow Serving
 
 ---
 
-## 📊 Dataset
+## 🛠️ Troubleshooting
 
-### PlantVillage Dataset
+### Common Issues
 
-- **Source**: Cornell University PlantVillage Project
-- **Total Images**: ~2,000
-- **Classes**: 3 (Early Blight, Late Blight, Healthy)
-- **Image Format**: JPEG
-- **Resolution**: Variable (resized to 256x256 during training)
+**Docker won't start?**
+- Stop old containers: `docker stop $(docker ps -q)`
+- Check path in mount command matches your system
+- Verify port 8501 is free: `netstat -an | findstr 8501`
 
-### Class Distribution
+**Backend errors?**
+- Check port 8000 is available
+- Install all dependencies: `pip install -r requirements.txt`
+- Verify TensorFlow Serving is running
 
-| Class | Description | Image Count |
-|-------|-------------|-------------|
-| Early Blight | Dark brown spots with concentric rings | ~1,000 |
-| Late Blight | Large irregular brown lesions | ~1,000 |
-| Healthy | Green, unblemished leaves | ~152 |
+**Chatbot not responding?**
+- Check Ollama is running: `curl http://localhost:11434/api/version`
+- Verify Llama 3.2 is installed: `ollama list`
+- Check backend logs for errors
 
-### Data Augmentation
-
-To improve model generalization:
-- Random horizontal/vertical flips
-- Random rotation (±15°)
-- Random zoom (±10%)
-- Normalization (pixel values scaled to [0, 1])
-
----
-
-## 🌐 Deployment
-
-### Local Deployment
-
-Follow the [Installation](#-installation) steps above.
-
-### Production Deployment Options
-
-#### 1. **Docker Compose** (Recommended)
-
-Create `docker-compose.yml`:
-
-```yaml
-version: '3.8'
-services:
-  tensorflow-serving:
-    image: tensorflow/serving
-    ports:
-      - "8501:8501"
-    volumes:
-      - ./saved_models:/models/potatoes_model
-    environment:
-      - MODEL_NAME=potatoes_model
-
-  backend:
-    build: ./Backend server
-    ports:
-      - "8000:8000"
-    depends_on:
-      - tensorflow-serving
-    environment:
-      - TF_SERVING_ENDPOINT=http://tensorflow-serving:8501/v1/models/potatoes_model:predict
-
-  frontend:
-    image: nginx:alpine
-    ports:
-      - "80:80"
-    volumes:
-      - ./potato-disease-frontend:/usr/share/nginx/html
-```
-
-Run:
-```bash
-docker-compose up -d
-```
-
-#### 2. **Cloud Platforms**
-
-- **AWS**: Deploy on EC2 with Elastic Load Balancer
-- **Google Cloud**: Use Cloud Run for containerized deployment
-- **Azure**: Deploy on Azure Container Instances
-- **Heroku**: Use Heroku Dynos for backend + static site for frontend
-
-#### 3. **TensorFlow Serving on Kubernetes**
-
-For high-availability production:
-```bash
-kubectl apply -f tf-serving-deployment.yaml
-kubectl apply -f backend-deployment.yaml
-kubectl apply -f frontend-deployment.yaml
-```
-
----
+**Wrong predictions?**
+- Ensure using `main_fixed.py` (has normalization fix)
+- Verify model version 3 is loaded in Docker
+- Check image is clear and well-lit
 
 ## 🤝 Contributing
 
-We welcome contributions! Please follow these steps:
+We welcome contributions! To contribute:
 
-### 1. Fork the Repository
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/AmazingFeature`
+3. Make your changes with clear commits
+4. Push to your fork: `git push origin feature/AmazingFeature`
+5. Open a Pull Request
 
-Click the "Fork" button at the top right of this page.
-
-### 2. Clone Your Fork
-
-```bash
-git clone https://github.com/your-username/Minor-project.git
-cd Minor-project
-```
-
-### 3. Create a Feature Branch
-
-```bash
-git checkout -b feature/AmazingFeature
-```
-
-### 4. Make Changes
-
-- Write clean, documented code
-- Follow existing code style
-- Add tests for new features
-
-### 5. Commit Your Changes
-
-```bash
-git add .
-git commit -m "Add: Amazing new feature"
-```
-
-### 6. Push to Your Fork
-
-```bash
-git push origin feature/AmazingFeature
-```
-
-### 7. Open a Pull Request
-
-Go to the original repository and click "New Pull Request".
-
-### Code of Conduct
-
-- Be respectful and inclusive
-- Provide constructive feedback
-- Follow best practices for code quality
+Please ensure:
+- Code follows existing style
+- All tests pass
+- Documentation is updated
+- Commit messages are descriptive
 
 ---
 
-## 📝 License
+## 📄 License
 
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **MIT License** - see the LICENSE file for details.
 
 ---
 
 ## 👥 Authors
 
-**Sarvagya Gupta** : **Sarwagya Shah** : **Ayush Prakash Tiwari**
-- GitHub: [@sarvagya-019](https://github.com/sarvagya-019) , [@AyushPrakash414](https://github.com/AyushPrakash414) ,  [@SARWAGYASHAH](https://github.com/SARWAGYASHAH) 
+**Sarvagya Gupta** • **Sarwagya Shah** • **Ayush Prakash Tiwari**
 
+- GitHub: [@sarvagya-019](https://github.com/sarvagya-019) • [@SARWAGYASHAH](https://github.com/SARWAGYASHAH) • [@AyushPrakash414](https://github.com/AyushPrakash414)
 - Repository: [Minor-project](https://github.com/AyushPrakash414/Minor-project.git)
 
 ---
 
 ## 🙏 Acknowledgments
 
-- **PlantVillage** - For providing the comprehensive potato disease dataset
-- **TensorFlow Team** - For the excellent deep learning framework
-- **FastAPI** - For the modern, fast web framework
-- **Cornell University** - For pioneering plant disease recognition research
+- **PlantVillage Dataset** - Cornell University for comprehensive potato disease dataset
+- **TensorFlow Team** - Excellent deep learning framework
+- **FastAPI** - Modern, fast web framework
+- **Ollama & Llama 3.2** - Local AI capabilities
 
 ---
 
@@ -897,25 +417,9 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 - [ ] Integration with weather APIs for risk prediction
 - [ ] User authentication and prediction history
 - [ ] Batch image processing
-- [ ] Export reports as PDF
 - [ ] Multi-crop support (tomato, pepper, etc.)
-- [ ] Real-time camera capture for mobile devices
 - [ ] Offline model support with TensorFlow Lite
 - [ ] Voice input for chatbot
-- [ ] Custom knowledge base for region-specific advice
-
----
-
-## 📈 Performance Metrics
-
-| Metric | Value |
-|--------|-------|
-| Model Accuracy | ~95% |
-| Inference Time | <100ms |
-| API Response Time | <200ms |
-| Supported Image Formats | JPG, PNG, JPEG |
-| Max Image Size | 10MB |
-| Concurrent Requests | 100+ |
 
 ---
 
@@ -924,5 +428,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 **⭐ If you find this project useful, please consider giving it a star!**
 
 Made with ❤️ for the agricultural community
+
+**Version 2.0** • Last Updated: November 2025
 
 </div>

@@ -1,5 +1,6 @@
 # Dataset folders (large files)
-Training dataset/
+# Dataset
+dataset/
 PlantVillage_split/
 
 # Python
@@ -22,8 +23,8 @@ ENV/
 *.ipynb_checkpoints/
 
 # TensorFlow/Keras
-saved_models/*
-!saved_models/.gitkeep
+models/*
+!models/.gitkeep
 *.h5
 *.pb
 *.ckpt
