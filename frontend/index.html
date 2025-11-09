@@ -1,0 +1,2610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI-powered potato disease detection system for accurate diagnosis and treatment recommendations">
+    <meta name="keywords" content="potato disease, plant health, AI detection, agriculture, early blight, late blight">
+    <meta name="theme-color" content="#27ae60">
+    <title>Potato Disease Detection - AI-Powered Plant Health Analysis</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #27ae60;
+            --primary-dark: #219653;
+            --primary-light: #6fcf97;
+            --text: #2d3436;
+            --text-light: #636e72;
+            --background: #f8f9fa;
+            --white: #ffffff;
+            --gray-light: #e9ecef;
+            --border: #dee2e6;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.15);
+            --border-radius: 16px;
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            background: radial-gradient(circle at 10% 20%, rgba(111, 207, 151, 0.15), transparent 45%),
+                        radial-gradient(circle at 90% 10%, rgba(39, 174, 96, 0.12), transparent 50%),
+                        var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at top left, rgba(39, 174, 96, 0.15), transparent 60%),
+                        radial-gradient(circle at bottom right, rgba(111, 207, 151, 0.12), transparent 55%);
+            z-index: -2;
+            pointer-events: none;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 25px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo i {
+            font-size: 28px;
+        }
+        
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .language-selector {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .lang-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        
+        .lang-btn.active {
+            background: white;
+            color: var(--primary);
+        }
+        
+        .lang-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            padding: 100px 0 80px;
+            position: relative;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(39, 174, 96, 0.1) 0%, rgba(33, 150, 83, 0.05) 100%);
+            filter: blur(0);
+            z-index: -1;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 60px;
+            align-items: center;
+        }
+
+        .hero-content {
+            text-align: left;
+            max-width: 560px;
+        }
+
+        .hero-title {
+            font-size: 3.2rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: var(--text);
+            line-height: 1.1;
+        }
+
+        .hero-title .hero-highlight {
+            color: var(--primary);
+        }
+
+        .hero-title span + .hero-highlight {
+            margin-left: 12px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 35px;
+            line-height: 1.7;
+        }
+
+        .hero-cta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 35px;
+        }
+
+        .hero-cta .btn {
+            padding: 16px 32px;
+        }
+
+        .hero-note {
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .hero-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .hero-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.75);
+            border-radius: 14px;
+            box-shadow: 0 12px 40px rgba(39, 174, 96, 0.12);
+            backdrop-filter: blur(6px);
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .hero-badge i {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .hero-illustration {
+            position: relative;
+            min-height: 320px;
+            border-radius: 26px;
+            background: linear-gradient(160deg, rgba(39, 174, 96, 0.3) 0%, rgba(33, 150, 83, 0.15) 100%);
+            box-shadow: 0 30px 60px rgba(39, 174, 96, 0.2);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-illustration::after {
+            content: '';
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.25);
+            top: -60px;
+            right: -40px;
+        }
+
+        .hero-illustration::before {
+            content: '';
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border-radius: 40px;
+            background: rgba(255, 255, 255, 0.18);
+            bottom: -50px;
+            left: -40px;
+        }
+
+        .hero-illustration .hero-visual-card {
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 32px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            display: grid;
+            gap: 18px;
+            text-align: left;
+            max-width: 280px;
+        }
+
+        .hero-visual-card h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .hero-visual-card ul {
+            list-style: none;
+            display: grid;
+            gap: 10px;
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .hero-visual-card ul li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hero-visual-card ul li i {
+            color: var(--primary);
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 14px 18px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            text-align: left;
+        }
+
+        .stat-card strong {
+            display: block;
+            font-size: 1.6rem;
+            color: var(--primary);
+        }
+
+        .stat-card span {
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        .scroll-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 40px;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        .scroll-indicator i {
+            animation: bounce 2s infinite;
+        }
+        
+        /* Detection Section */
+        .detection-section {
+            padding: 90px 0;
+            position: relative;
+        }
+
+        .detection-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(39, 174, 96, 0.08) 0%, rgba(248, 249, 250, 0) 60%);
+            z-index: -1;
+        }
+
+        .section-heading {
+            text-align: center;
+            max-width: 720px;
+            margin: 0 auto 50px;
+        }
+
+        .section-heading .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(39, 174, 96, 0.12);
+            color: var(--primary);
+            border-radius: 999px;
+            font-weight: 600;
+            margin-bottom: 18px;
+        }
+
+        .section-heading .pill i {
+            font-size: 1rem;
+        }
+
+        .section-heading h2 {
+            font-size: 2.4rem;
+            color: var(--text);
+            margin-bottom: 18px;
+            line-height: 1.2;
+        }
+
+        .section-heading p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+
+        .step-card {
+            background: var(--white);
+            border-radius: 18px;
+            padding: 28px 24px;
+            border: 1px solid rgba(39, 174, 96, 0.15);
+            box-shadow: 0 16px 40px rgba(39, 174, 96, 0.12);
+            display: grid;
+            gap: 14px;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .step-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 45px rgba(39, 174, 96, 0.18);
+        }
+
+        .step-card::after {
+            content: attr(data-step);
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            font-weight: 700;
+            color: rgba(33, 150, 83, 0.2);
+            font-size: 2.4rem;
+        }
+
+        .step-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            background: rgba(39, 174, 96, 0.15);
+            color: var(--primary);
+            font-size: 1.4rem;
+        }
+
+        .step-card h4 {
+            font-size: 1.3rem;
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        .step-card p {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        .detection-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        /* Cards */
+        .card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 40px;
+            transition: var(--transition);
+            border: 1px solid var(--border);
+            margin-bottom: 30px;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .card-header i {
+            font-size: 2.2rem;
+            color: var(--primary);
+        }
+        
+        .card-header h3 {
+            font-size: 1.8rem;
+            color: var(--text);
+            font-weight: 700;
+        }
+        
+        /* Upload Area */
+        .upload-area {
+            border: 3px dashed var(--border);
+            border-radius: var(--border-radius);
+            padding: 60px 30px;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+            margin-bottom: 30px;
+            background: var(--gray-light);
+        }
+        
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: rgba(39, 174, 96, 0.05);
+        }
+        
+        .upload-area.dragover {
+            border-color: var(--primary);
+            background: rgba(39, 174, 96, 0.1);
+        }
+        
+        .upload-placeholder i {
+            font-size: 4rem;
+            color: var(--text-light);
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .upload-placeholder h4 {
+            color: var(--text);
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+        
+        .upload-placeholder p {
+            color: var(--text-light);
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .btn.loading {
+            pointer-events: none;
+        }
+        
+        .btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 50%;
+            right: 20px;
+            margin-top: -8px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--white);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(39, 174, 96, 0.4);
+        }
+        
+        .btn-secondary {
+            background: var(--text-light);
+            color: var(--white);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--text);
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary);
+            color: var(--white);
+            transform: translateY(-2px);
+        }
+        
+        /* Upload Tips */
+        .upload-tips {
+            background: var(--gray-light);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary);
+        }
+        
+        .upload-tips h5 {
+            margin-bottom: 20px;
+            color: var(--text);
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .tip-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--white);
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+        
+        .tip-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .tip-item i {
+            color: var(--primary);
+            font-size: 1.1rem;
+            width: 20px;
+        }
+        
+        .tip-item span {
+            color: var(--text);
+            font-weight: 500;
+        }
+        
+        /* Preview Card */
+        .preview-content {
+            text-align: center;
+        }
+        
+        .image-container {
+            margin-bottom: 30px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        
+        #previewImage {
+            max-width: 100%;
+            max-height: 400px;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .preview-actions {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        /* Loading Card */
+        .loading-content {
+            text-align: center;
+            padding: 50px 30px;
+        }
+        
+        .loading-spinner {
+            width: 70px;
+            height: 70px;
+            border: 4px solid var(--gray-light);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+            margin: 0 auto 25px;
+        }
+        
+        .loading-content h4 {
+            color: var(--text);
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+        
+        .loading-content p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+        }
+        
+        .loading-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .loading-dots span {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--primary);
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+        
+        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes bounce {
+            0%, 80%, 100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        /* Results Card */
+        .results-content {
+            animation: slideUp 0.6s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .disease-identification {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            margin-bottom: 35px;
+            padding: 25px;
+            background: var(--gray-light);
+            border-radius: var(--border-radius);
+            flex-wrap: wrap;
+        }
+        
+        .result-icon {
+            font-size: 3.5rem;
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: var(--white);
+            flex-shrink: 0;
+            box-shadow: var(--shadow);
+        }
+        
+        .result-icon.early-blight {
+            background: var(--primary);
+        }
+        
+        .result-icon.late-blight {
+            background: #e74c3c;
+        }
+        
+        .result-icon.healthy {
+            background: #2ecc71;
+        }
+        
+        .result-info {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .result-info h4 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: var(--text);
+            font-weight: 700;
+        }
+        
+        .result-info p {
+            color: var(--text-light);
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        .confidence-meter {
+            margin-top: 20px;
+        }
+        
+        .meter-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .meter-bar {
+            height: 10px;
+            background: var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .meter-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            border-radius: 10px;
+            transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            width: 0%;
+        }
+        
+        .confidence-badge {
+            background: var(--primary);
+            color: var(--white);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        /* Detailed Analysis */
+        .detailed-analysis {
+            margin: 35px 0;
+            display: grid;
+            gap: 20px;
+        }
+        
+        .analysis-section {
+            background: var(--gray-light);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary);
+            transition: var(--transition);
+        }
+        
+        .analysis-section:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow);
+        }
+        
+        .analysis-section h5 {
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+        
+        .analysis-content {
+            color: var(--text-light);
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+        
+        .analysis-content ul {
+            padding-left: 20px;
+            margin: 15px 0;
+        }
+        
+        .analysis-content li {
+            margin-bottom: 10px;
+            color: var(--text-light);
+            position: relative;
+            padding-left: 10px;
+            line-height: 1.6;
+        }
+        
+        .analysis-content li:before {
+            content: "•";
+            color: var(--primary);
+            font-weight: bold;
+            position: absolute;
+            left: -15px;
+            font-size: 1.2rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 35px;
+            padding-top: 35px;
+            border-top: 1px solid var(--border);
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--primary-dark);
+            color: white;
+            padding: 50px 0 25px;
+        }
+        
+        .footer-content {
+            text-align: center;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .footer-logo i {
+            font-size: 1.6rem;
+        }
+        
+        .footer-desc {
+            opacity: 0.9;
+            line-height: 1.6;
+            font-size: 1.1rem;
+            max-width: 500px;
+            margin: 0 auto 30px;
+        }
+        
+        .footer-meta {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 25px;
+            text-align: center;
+            opacity: 0.7;
+        }
+        
+        /* Error Message */
+        .error-message {
+            background: #fee;
+            border: 2px solid #fcc;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin: 20px 0;
+            color: #c33;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: slideDown 0.3s ease;
+        }
+        
+        .error-message i {
+            font-size: 1.5rem;
+        }
+        
+        .error-message.success {
+            background: #efe;
+            border-color: #cfc;
+            color: #363;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Image validation overlay */
+        .image-overlay {
+            position: relative;
+        }
+        
+        .image-overlay::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0);
+            transition: var(--transition);
+            pointer-events: none;
+        }
+        
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+        
+        .disabled {
+            opacity: 0.6;
+            cursor: not-allowed !important;
+            pointer-events: none;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .hero-grid {
+                gap: 40px;
+            }
+
+            .hero-content {
+                text-align: center;
+                margin: 0 auto;
+            }
+
+            .hero-title {
+                font-size: 2.4rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .hero-cta {
+                justify-content: center;
+            }
+
+            .hero-badges {
+                justify-content: center;
+            }
+
+            .hero-illustration {
+                min-height: 260px;
+            }
+
+            .hero-visual-card {
+                margin: 0 auto;
+            }
+            
+            .card {
+                padding: 25px 20px;
+            }
+            
+            .upload-area {
+                padding: 40px 20px;
+            }
+            
+            .card-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            
+            .card-header h3 {
+                font-size: 1.5rem;
+            }
+            
+            .tips-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .disease-identification {
+                flex-direction: column;
+                text-align: center;
+                padding: 20px;
+            }
+
+            .steps-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .result-info {
+                min-width: auto;
+            }
+            
+            .preview-actions,
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 280px;
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .hero-stats {
+                justify-content: center;
+            }
+            
+            .upload-area {
+                padding: 30px 15px;
+            }
+            
+            .upload-placeholder i {
+                font-size: 3rem;
+            }
+            
+            .upload-placeholder h4 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-seedling"></i>
+                    <span id="header-title">Potato Disease Detection</span>
+                </div>
+                <div class="header-controls">
+                    <div class="language-selector">
+                        <button class="lang-btn active" data-lang="en">English</button>
+                        <button class="lang-btn" data-lang="hi">हिन्दी</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        <span id="hero-title-main">AI-Powered</span>
+                        <span class="hero-highlight" id="hero-title-highlight">Potato Disease Detection</span>
+                    </h1>
+                    <p class="hero-subtitle" id="hero-subtitle">Upload a photo of potato leaves and get instant, accurate diagnosis with detailed treatment recommendations.</p>
+                    <div class="hero-cta">
+                        <a class="btn btn-primary" href="#detection">
+                            <i class="fas fa-bolt"></i>
+                            <span id="hero-cta-button">Start Instant Analysis</span>
+                        </a>
+                        <span class="hero-note" id="hero-note">No sign-up required • Secure local inference</span>
+                    </div>
+                    <div class="hero-badges">
+                        <div class="hero-badge">
+                            <i class="fas fa-gauge-high"></i>
+                            <span id="hero-badge-speed">Real-time predictions</span>
+                        </div>
+                        <div class="hero-badge">
+                            <i class="fas fa-language"></i>
+                            <span id="hero-badge-language">Bilingual interface</span>
+                        </div>
+                        <div class="hero-badge">
+                            <i class="fas fa-certificate"></i>
+                            <span id="hero-badge-accuracy">97% model accuracy</span>
+                        </div>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="stat-card">
+                            <strong>2.1s</strong>
+                            <span id="hero-stat-speed">Average prediction time</span>
+                        </div>
+                        <div class="stat-card">
+                            <strong>12K+</strong>
+                            <span id="hero-stat-volume">Leaves analyzed</span>
+                        </div>
+                        <div class="stat-card">
+                            <strong>24/7</strong>
+                            <span id="hero-stat-uptime">Plant health monitoring</span>
+                        </div>
+                    </div>
+                    <div class="scroll-indicator">
+                        <i class="fas fa-arrow-down"></i>
+                        <span id="hero-scroll">Scroll to diagnose your crop</span>
+                    </div>
+                </div>
+                <div class="hero-illustration" aria-hidden="true">
+                    <div class="hero-visual-card">
+                        <h3 id="hero-visual-title">Live Model Snapshot</h3>
+                        <ul>
+                            <li><i class="fas fa-check-circle"></i><span id="hero-visual-item1">High-confidence detection</span></li>
+                            <li><i class="fas fa-leaf"></i><span id="hero-visual-item2">Healthy crop indicators</span></li>
+                            <li><i class="fas fa-virus"></i><span id="hero-visual-item3">Early & Late blight alerts</span></li>
+                            <li><i class="fas fa-cloud"></i><span id="hero-visual-item4">Seamless TF Serving support</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Detection Section -->
+    <section class="detection-section" id="detection">
+        <div class="container">
+            <div class="section-heading">
+                <span class="pill"><i class="fas fa-microscope"></i> <span id="section-pill">Smart Diagnosis Flow</span></span>
+                <h2 id="section-heading">Analyze potato leaves in three intuitive steps</h2>
+                <p id="section-subheading">Our lightweight interface guides you from photo upload to actionable agronomy insights in under a minute.</p>
+            </div>
+            <div class="steps-grid">
+                <div class="step-card" data-step="01">
+                    <div class="step-icon"><i class="fas fa-camera"></i></div>
+                    <h4 id="step1-title">Capture & Upload</h4>
+                    <p id="step1-desc">Use your phone or camera to capture crisp images of potato leaves from multiple angles.</p>
+                </div>
+                <div class="step-card" data-step="02">
+                    <div class="step-icon"><i class="fas fa-wand-magic-sparkles"></i></div>
+                    <h4 id="step2-title">AI-Powered Screening</h4>
+                    <p id="step2-desc">Our TensorFlow Serving backend evaluates disease patterns with production-grade precision.</p>
+                </div>
+                <div class="step-card" data-step="03">
+                    <div class="step-icon"><i class="fas fa-hand-holding-heart"></i></div>
+                    <h4 id="step3-title">Get Guided Actions</h4>
+                    <p id="step3-desc">Receive tailored prevention, treatment and field management recommendations instantly.</p>
+                </div>
+            </div>
+            <div class="detection-container">
+                <!-- Upload Card -->
+                <div class="card active" id="uploadCard">
+                    <div class="card-header">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <h3 id="upload-title">Upload Potato Leaf Image</h3>
+                    </div>
+                    
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-placeholder">
+                            <i class="fas fa-images"></i>
+                            <h4 id="upload-drop">Drop your image here or click to browse</h4>
+                            <p id="upload-formats">Supports JPG, PNG, JPEG - Maximum 10MB</p>
+                            <button class="btn btn-primary" id="uploadBtn">
+                                <i class="fas fa-folder-open"></i>
+                                <span id="upload-button">Choose Image File</span>
+                            </button>
+                        </div>
+                        <input type="file" id="fileInput" accept="image/*" hidden>
+                    </div>
+
+                    <div class="upload-tips">
+                        <h5 id="tips-title">📸 For Best Results:</h5>
+                        <div class="tips-grid">
+                            <div class="tip-item">
+                                <i class="fas fa-sun"></i>
+                                <span id="tip1">Good daylight</span>
+                            </div>
+                            <div class="tip-item">
+                                <i class="fas fa-crosshairs"></i>
+                                <span id="tip2">Clear focus on leaves</span>
+                            </div>
+                            <div class="tip-item">
+                                <i class="fas fa-ban"></i>
+                                <span id="tip3">No shadows or blur</span>
+                            </div>
+                            <div class="tip-item">
+                                <i class="fas fa-exchange-alt"></i>
+                                <span id="tip4">Both leaf sides</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preview Card -->
+                <div class="card hidden" id="previewCard">
+                    <div class="card-header">
+                        <i class="fas fa-eye"></i>
+                        <h3 id="preview-title">Image Preview</h3>
+                    </div>
+                    <div class="preview-content">
+                        <div class="image-container">
+                            <img id="previewImage" src="#" alt="Potato leaf preview">
+                        </div>
+                        <div class="preview-actions">
+                            <button class="btn btn-secondary" id="changeImageBtn">
+                                <i class="fas fa-redo"></i>
+                                <span id="change-image">Choose Different Image</span>
+                            </button>
+                            <button class="btn btn-primary" id="predictBtn">
+                                <i class="fas fa-search"></i>
+                                <span id="analyze-button">Analyze This Image</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loading Card -->
+                <div class="card hidden" id="loadingCard">
+                    <div class="loading-content">
+                        <div class="loading-spinner"></div>
+                        <h4 id="analyzing">Analyzing Image...</h4>
+                        <p id="analyzing-subtitle">Examining your potato leaves for disease patterns</p>
+                        <div class="loading-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results Card -->
+                <div class="card hidden" id="resultsCard">
+                    <div class="card-header">
+                        <i class="fas fa-clipboard-check"></i>
+                        <h3 id="results-title">Analysis Results</h3>
+                        <div class="confidence-badge" id="confidenceBadge"></div>
+                    </div>
+                    
+                    <div class="results-content">
+                        <!-- Disease Identification -->
+                        <div class="disease-identification">
+                            <div class="result-icon early-blight" id="resultIcon">
+                                <i class="fas fa-bug"></i>
+                            </div>
+                            <div class="result-info">
+                                <h4 id="diseaseName">Early Blight</h4>
+                                <p id="diseaseDescription">Caused by Alternaria solani fungus. Early detection allows for effective treatment.</p>
+                                <div class="confidence-meter">
+                                    <div class="meter-labels">
+                                        <span id="confidence-label">Confidence Level</span>
+                                        <span id="confidenceValue">80.2%</span>
+                                    </div>
+                                    <div class="meter-bar">
+                                        <div class="meter-fill" id="meterFill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Detailed Analysis -->
+                        <div class="detailed-analysis">
+                            <div class="analysis-section">
+                                <h5><i class="fas fa-info-circle"></i> <span id="symptoms">Key Symptoms</span></h5>
+                                <div id="symptomsContent" class="analysis-content">
+                                    <ul>
+                                        <li id="symptom1">Small, dark brown to black spots on older leaves</li>
+                                        <li id="symptom2">Spots enlarge to form concentric rings (target spots)</li>
+                                        <li id="symptom3">Yellowing of leaves around the spots</li>
+                                        <li id="symptom4">Leaves may wilt and die prematurely</li>
+                                        <li id="symptom5">Lesions may also appear on stems and tubers</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="analysis-section">
+                                <h5><i class="fas fa-shield-alt"></i> <span id="prevention">Prevention Methods</span></h5>
+                                <div id="preventionContent" class="analysis-content">
+                                    <ul>
+                                        <li id="prevention1">Practice 3-4 year crop rotation with non-solanaceous crops</li>
+                                        <li id="prevention2">Use certified disease-free seed potatoes</li>
+                                        <li id="prevention3">Space plants properly for good air circulation</li>
+                                        <li id="prevention4">Avoid overhead irrigation to keep foliage dry</li>
+                                        <li id="prevention5">Remove and destroy infected plant debris</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="analysis-section">
+                                <h5><i class="fas fa-stethoscope"></i> <span id="treatment">Treatment Recommendations</span></h5>
+                                <div id="treatmentContent" class="analysis-content">
+                                    <ul>
+                                        <li id="treatment1">Apply fungicides containing chlorothalonil or mancozeb</li>
+                                        <li id="treatment2">Use copper-based fungicides as preventive measure</li>
+                                        <li id="treatment3">Apply treatments at 7-10 day intervals during favorable conditions</li>
+                                        <li id="treatment4">Remove severely infected plants to prevent spread</li>
+                                        <li id="treatment5">Ensure proper nutrition to help plants resist infection</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="action-buttons">
+                            <button class="btn btn-outline" id="newAnalysisBtn">
+                                <i class="fas fa-plus"></i>
+                                <span id="new-analysis">Analyze Another Image</span>
+                            </button>
+                            <button class="btn btn-primary" onclick="window.print()">
+                                <i class="fas fa-print"></i>
+                                <span id="print-report">Print Full Report</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-seedling"></i>
+                    <span>Potato Disease Detection</span>
+                </div>
+                <p class="footer-desc" id="footer-desc">Machine Learning system for detecting potato plant diseases with high accuracy and detailed treatment guidance.</p>
+                <div class="footer-meta">
+                    <p>&copy; 2024 Potato Disease Detection System. <span id="footer-rights">All rights reserved.</span></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Define backend URL in one place for easy configuration
+        const BACKEND_URL = 'http://localhost:8000';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Language management
+            const langButtons = document.querySelectorAll('.lang-btn');
+            let currentLang = 'en';
+
+            const translatableIds = [
+                'header-title',
+                'hero-title-main',
+                'hero-title-highlight',
+                'hero-subtitle',
+                'hero-cta-button',
+                'hero-note',
+                'hero-badge-speed',
+                'hero-badge-language',
+                'hero-badge-accuracy',
+                'hero-stat-speed',
+                'hero-stat-volume',
+                'hero-stat-uptime',
+                'hero-scroll',
+                'hero-visual-title',
+                'hero-visual-item1',
+                'hero-visual-item2',
+                'hero-visual-item3',
+                'hero-visual-item4',
+                'section-pill',
+                'section-heading',
+                'section-subheading',
+                'step1-title',
+                'step1-desc',
+                'step2-title',
+                'step2-desc',
+                'step3-title',
+                'step3-desc',
+                'upload-title',
+                'upload-drop',
+                'upload-formats',
+                'upload-button',
+                'tips-title',
+                'tip1',
+                'tip2',
+                'tip3',
+                'tip4',
+                'preview-title',
+                'change-image',
+                'analyze-button',
+                'analyzing',
+                'analyzing-subtitle',
+                'results-title',
+                'confidence-label',
+                'symptoms',
+                'prevention',
+                'treatment',
+                'new-analysis',
+                'print-report',
+                'footer-desc',
+                'footer-rights',
+                'symptom1',
+                'symptom2',
+                'symptom3',
+                'symptom4',
+                'symptom5',
+                'prevention1',
+                'prevention2',
+                'prevention3',
+                'prevention4',
+                'prevention5',
+                'treatment1',
+                'treatment2',
+                'treatment3',
+                'treatment4',
+                'treatment5'
+            ];
+
+            const originalTextMap = {};
+            const translationCache = {};
+
+            translatableIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    originalTextMap[id] = el.textContent.trim();
+                }
+            });
+
+            translationCache.en = translatableIds.map(id => originalTextMap[id] || '');
+
+            async function requestTranslations(texts, targetLang) {
+                const response = await fetch(`${BACKEND_URL}/translate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        texts,
+                        target: targetLang
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Translation service error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                if (!data || !Array.isArray(data.translations)) {
+                    throw new Error('Unexpected translation response format');
+                }
+
+                return data.translations;
+            }
+
+            async function applyLanguage(lang) {
+                if (lang === currentLang) {
+                    return;
+                }
+
+                langButtons.forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.lang === lang);
+                });
+
+                try {
+                    let translatedTexts = [];
+
+                    if (lang === 'en') {
+                        translatedTexts = translationCache.en;
+                    } else if (translationCache[lang]) {
+                        translatedTexts = translationCache[lang];
+                    } else {
+                        const sourceTexts = translatableIds.map(id => originalTextMap[id] || '');
+                        translatedTexts = await requestTranslations(sourceTexts, lang);
+                        translationCache[lang] = translatedTexts;
+                    }
+
+                    translatedTexts.forEach((text, index) => {
+                        const el = document.getElementById(translatableIds[index]);
+                        if (el) {
+                            el.textContent = text;
+                        }
+                    });
+
+                    currentLang = lang;
+                } catch (error) {
+                    console.error('Translation error:', error);
+                    showNotification('Unable to switch language right now. Please try again later.', 'error');
+                    langButtons.forEach(btn => {
+                        btn.classList.toggle('active', btn.dataset.lang === currentLang);
+                    });
+                }
+            }
+
+            langButtons.forEach(btn => {
+                btn.addEventListener('click', async function() {
+                    const targetLang = this.dataset.lang;
+                    if (targetLang === currentLang) {
+                        return;
+                    }
+
+                    this.disabled = true;
+                    try {
+                        await applyLanguage(targetLang);
+                    } finally {
+                        this.disabled = false;
+                    }
+                });
+            });
+            
+            // File upload and preview functionality
+            const fileInput = document.getElementById('fileInput');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const uploadArea = document.getElementById('uploadArea');
+            const previewImage = document.getElementById('previewImage');
+            const changeImageBtn = document.getElementById('changeImageBtn');
+            const predictBtn = document.getElementById('predictBtn');
+            const newAnalysisBtn = document.getElementById('newAnalysisBtn');
+            
+            const uploadCard = document.getElementById('uploadCard');
+            const previewCard = document.getElementById('previewCard');
+            const loadingCard = document.getElementById('loadingCard');
+            const resultsCard = document.getElementById('resultsCard');
+            
+            // Show upload card
+            function showUpload() {
+                uploadCard.classList.remove('hidden');
+                previewCard.classList.add('hidden');
+                loadingCard.classList.add('hidden');
+                resultsCard.classList.add('hidden');
+            }
+            
+            // Show preview card
+            function showPreview() {
+                uploadCard.classList.add('hidden');
+                previewCard.classList.remove('hidden');
+                loadingCard.classList.add('hidden');
+                resultsCard.classList.add('hidden');
+            }
+            
+            // Show loading card
+            function showLoading() {
+                uploadCard.classList.add('hidden');
+                previewCard.classList.add('hidden');
+                loadingCard.classList.remove('hidden');
+                resultsCard.classList.add('hidden');
+            }
+            
+            // Show results card
+            function showResults() {
+                uploadCard.classList.add('hidden');
+                previewCard.classList.add('hidden');
+                loadingCard.classList.add('hidden');
+                resultsCard.classList.remove('hidden');
+            }
+            
+            // File input click
+            uploadBtn.addEventListener('click', () => {
+                fileInput.click();
+            });
+            
+            uploadArea.addEventListener('click', (e) => {
+                if (e.target === uploadArea || e.target.classList.contains('upload-placeholder') || e.target.closest('.upload-placeholder')) {
+                    fileInput.click();
+                }
+            });
+            
+            // File selection
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // Validate file type
+                    if (!file.type.startsWith('image/')) {
+                        showNotification('Please select a valid image file (JPG, PNG, etc.)', 'error');
+                        return;
+                    }
+                    
+                    // Validate file size (max 10MB)
+                    if (file.size > 10 * 1024 * 1024) {
+                        showNotification('Image size should be less than 10MB', 'error');
+                        return;
+                    }
+                    
+                    // Create preview
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewImage.src = e.target.result;
+                        showPreview();
+                    };
+                    reader.onerror = function() {
+                        showNotification('Failed to read image file', 'error');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Drag and drop functionality
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+            
+            uploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+            });
+            
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    const event = new Event('change');
+                    fileInput.dispatchEvent(event);
+                }
+            });
+            
+            // Change image button
+            changeImageBtn.addEventListener('click', showUpload);
+            
+            // Analyze button - REAL backend connection
+            predictBtn.addEventListener('click', async function() {
+                // Disable button and show loading state
+                predictBtn.disabled = true;
+                predictBtn.classList.add('loading');
+                
+                showLoading();
+                
+                try {
+                    const file = fileInput.files[0];
+                    if (!file) {
+                        showNotification('Please select an image first', 'error');
+                        showPreview();
+                        return;
+                    }
+
+                    const formData = new FormData();
+                    formData.append('file', file);
+
+                    // Add timeout to prevent hanging
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+
+                    // Send to your backend
+                    const response = await fetch(`${BACKEND_URL}/predict`, {
+                        method: 'POST',
+                        body: formData,
+                        signal: controller.signal
+                    });
+
+                    clearTimeout(timeoutId);
+
+                    if (!response.ok) {
+                        throw new Error(`Server error: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    
+                    // Validate response structure
+                    if (!result.class || result.confidence === undefined) {
+                        throw new Error('Invalid response format from server');
+                    }
+                    
+                    // Update the UI with real results from backend
+                    const diseaseClass = result.class.toLowerCase();
+                    document.getElementById('diseaseName').textContent = result.class;
+                    document.getElementById('confidenceValue').textContent = `${(result.confidence * 100).toFixed(1)}%`;
+                    document.getElementById('confidenceBadge').textContent = result.class;
+                    
+                    // Update disease description based on result
+                    if (diseaseClass.includes('early blight')) {
+                        document.getElementById('diseaseDescription').textContent = 'Caused by Alternaria solani fungus. Early detection allows for effective treatment.';
+                        document.getElementById('resultIcon').innerHTML = '<i class="fas fa-bug"></i>';
+                        document.getElementById('resultIcon').className = 'result-icon early-blight';
+                    } else if (diseaseClass.includes('late blight')) {
+                        document.getElementById('diseaseDescription').textContent = 'Caused by Phytophthora infestans. Requires immediate attention and treatment.';
+                        document.getElementById('resultIcon').innerHTML = '<i class="fas fa-virus"></i>';
+                        document.getElementById('resultIcon').className = 'result-icon late-blight';
+                    } else if (diseaseClass.includes('healthy')) {
+                        document.getElementById('diseaseDescription').textContent = 'Your potato plant appears to be in excellent health with no signs of disease.';
+                        document.getElementById('resultIcon').innerHTML = '<i class="fas fa-leaf"></i>';
+                        document.getElementById('resultIcon').className = 'result-icon healthy';
+                    }
+                    
+                    // Animate the confidence meter
+                    setTimeout(() => {
+                        document.getElementById('meterFill').style.width = `${(result.confidence * 100).toFixed(1)}%`;
+                    }, 300);
+                    
+                    showResults();
+                    showNotification('Analysis completed successfully!', 'success');
+                    
+                    // Dispatch event for chatbot context
+                    window.dispatchEvent(new CustomEvent('predictionComplete', {
+                        detail: {
+                            class: result.class,
+                            class_index: result.class_index,
+                            confidence: result.confidence
+                        }
+                    }));
+                    
+                } catch (error) {
+                    console.error('Error:', error);
+                    let errorMessage = 'Failed to analyze image. ';
+                    
+                    if (error.name === 'AbortError') {
+                        errorMessage += 'Request timed out. Please try again.';
+                    } else if (error.message.includes('fetch')) {
+                        errorMessage += 'Please make sure your backend server is running on port 8000.';
+                    } else {
+                        errorMessage += error.message;
+                    }
+                    
+                    showNotification(errorMessage, 'error');
+                    showPreview();
+                } finally {
+                    // Re-enable button and remove loading state
+                    predictBtn.disabled = false;
+                    predictBtn.classList.remove('loading');
+                }
+            });
+            
+            // New analysis button
+            newAnalysisBtn.addEventListener('click', function() {
+                // Reset file input
+                fileInput.value = '';
+                previewImage.src = '';
+                // Reset confidence meter
+                document.getElementById('meterFill').style.width = '0%';
+                showUpload();
+            });
+            
+            // Notification system
+            function showNotification(message, type = 'info') {
+                // Remove existing notifications
+                const existingNotification = document.querySelector('.notification-toast');
+                if (existingNotification) {
+                    existingNotification.remove();
+                }
+                
+                const notification = document.createElement('div');
+                notification.className = `notification-toast ${type}`;
+                notification.innerHTML = `
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                    <span>${message}</span>
+                `;
+                
+                // Add styles dynamically if not present
+                if (!document.getElementById('notification-styles')) {
+                    const style = document.createElement('style');
+                    style.id = 'notification-styles';
+                    style.textContent = `
+                        .notification-toast {
+                            position: fixed;
+                            top: 20px;
+                            right: 20px;
+                            background: white;
+                            padding: 16px 24px;
+                            border-radius: 12px;
+                            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+                            display: flex;
+                            align-items: center;
+                            gap: 12px;
+                            z-index: 10000;
+                            animation: slideInRight 0.3s ease;
+                            max-width: 400px;
+                            border-left: 4px solid;
+                        }
+                        
+                        .notification-toast.success {
+                            border-left-color: #2ecc71;
+                            color: #27ae60;
+                        }
+                        
+                        .notification-toast.error {
+                            border-left-color: #e74c3c;
+                            color: #c0392b;
+                        }
+                        
+                        .notification-toast.info {
+                            border-left-color: #3498db;
+                            color: #2980b9;
+                        }
+                        
+                        .notification-toast i {
+                            font-size: 1.2rem;
+                        }
+                        
+                        @keyframes slideInRight {
+                            from {
+                                transform: translateX(400px);
+                                opacity: 0;
+                            }
+                            to {
+                                transform: translateX(0);
+                                opacity: 1;
+                            }
+                        }
+                        
+                        @keyframes slideOutRight {
+                            from {
+                                transform: translateX(0);
+                                opacity: 1;
+                            }
+                            to {
+                                transform: translateX(400px);
+                                opacity: 0;
+                            }
+                        }
+                    `;
+                    document.head.appendChild(style);
+                }
+                
+                document.body.appendChild(notification);
+                
+                // Auto remove after 5 seconds
+                setTimeout(() => {
+                    notification.style.animation = 'slideOutRight 0.3s ease';
+                    setTimeout(() => notification.remove(), 300);
+                }, 5000);
+            }
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                // Ctrl/Cmd + U to upload
+                if ((e.ctrlKey || e.metaKey) && e.key === 'u') {
+                    e.preventDefault();
+                    if (!uploadCard.classList.contains('hidden')) {
+                        fileInput.click();
+                    }
+                }
+                
+                // Escape to go back to upload
+                if (e.key === 'Escape') {
+                    if (!resultsCard.classList.contains('hidden') || !previewCard.classList.contains('hidden')) {
+                        showUpload();
+                    }
+                }
+            });
+
+            async function checkBackendConnection() {
+                try {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 5000);
+                    const response = await fetch('http://localhost:8000/ping', {
+                        method: 'GET',
+                        signal: controller.signal
+                    });
+                    clearTimeout(timeoutId);
+                    if (response.ok) {
+                        console.log('✓ Backend server is connected');
+                        showNotification('Backend connected successfully', 'success');
+                    }
+                } catch (error) {
+                    console.warn('⚠ Cannot connect to backend server:', error.message);
+                    // Don't show error notification on initial load to avoid confusion
+                }
+            }
+
+            // Call this when the page loads
+            checkBackendConnection();
+            
+            // Initialize with upload card
+            showUpload();
+
+            // Handle language changes - send to chatbot iframe
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const lang = btn.getAttribute('data-lang');
+                    const chatFrame = document.getElementById('chatbot-frame');
+                    if (chatFrame && chatFrame.contentWindow) {
+                        chatFrame.contentWindow.postMessage({
+                            type: 'languageChange',
+                            language: lang
+                        }, '*');
+                    }
+                });
+            });
+
+            // Listen for prediction completion to notify chatbot
+            window.addEventListener('predictionComplete', (event) => {
+                const chatFrame = document.getElementById('chatbot-frame');
+                if (chatFrame && chatFrame.contentWindow) {
+                    chatFrame.contentWindow.postMessage({
+                        type: 'predictionComplete',
+                        prediction: event.detail
+                    }, '*');
+                }
+            });
+        });
+    </script>
+
+    <!-- AI Chatbot (Embedded as iframe) -->
+    <iframe 
+        id="chatbot-frame" 
+        src="chatbot.html" 
+        style="position: fixed; bottom: 0; right: 0; width: 500px; height: 700px; border: none; z-index: 10000; pointer-events: none;"
+        onload="this.style.pointerEvents = 'auto';"
+    ></iframe>
+</body>
+</html>
+        
+        <div id="chat-window" class="chat-window hidden">
+            <div class="chat-header">
+                <div class="chat-header-content">
+                    <i class="fas fa-robot"></i>
+                    <div>
+                        <h3 id="chat-title">AI Agriculture Assistant</h3>
+                        <p id="chat-subtitle">Ask me anything about potato diseases</p>
+                    </div>
+                </div>
+                <div class="chat-header-actions">
+                    <button id="chat-clear-btn" class="chat-icon-btn" title="Clear conversation">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <button id="chat-close-btn" class="chat-icon-btn" title="Close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div id="chat-messages" class="chat-messages">
+                <div class="chat-message bot-message">
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <p>👋 Hello! I'm your AI agriculture assistant. I can help you with:</p>
+                        <ul>
+                            <li>🦠 Understanding potato diseases</li>
+                            <li>💊 Treatment recommendations</li>
+                            <li>🛡️ Prevention strategies</li>
+                            <li>❓ Any agriculture-related questions</li>
+                        </ul>
+                        <p>How can I assist you today?</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-quick-replies" id="chat-quick-replies">
+                <button class="quick-reply-btn" data-message="What is Early Blight?">
+                    🦠 What is Early Blight?
+                </button>
+                <button class="quick-reply-btn" data-message="How to prevent Late Blight?">
+                    🛡️ Prevent Late Blight
+                </button>
+                <button class="quick-reply-btn" data-message="Best fungicides for potato diseases?">
+                    💊 Fungicide recommendations
+                </button>
+            </div>
+            
+            <div class="chat-input-container">
+                <div class="chat-input-wrapper">
+                    <input 
+                        type="text" 
+                        id="chat-input" 
+                        class="chat-input" 
+                        placeholder="Type your question..."
+                        autocomplete="off"
+                    />
+                    <button id="chat-send-btn" class="chat-send-btn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="chat-status" id="chat-status"></div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Chatbot Styles */
+        .chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+        
+        .chat-toggle-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(39, 174, 96, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .chat-toggle-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(39, 174, 96, 0.6);
+        }
+        
+        .chat-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #e74c3c;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 10px;
+            border: 2px solid white;
+        }
+        
+        .chat-window {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 400px;
+            height: 600px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .chat-window.hidden {
+            display: none;
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chat-header-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .chat-header-content i {
+            font-size: 28px;
+        }
+        
+        .chat-header h3 {
+            margin: 0;
+            font-size: 16px;
+        }
+        
+        .chat-header p {
+            margin: 0;
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        .chat-header-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .chat-icon-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .chat-icon-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        
+        .chat-message {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            animation: fadeInUp 0.3s ease;
+        }
+        
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .bot-message .message-avatar {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+        
+        .user-message {
+            flex-direction: row-reverse;
+        }
+        
+        .user-message .message-avatar {
+            background: #e9ecef;
+            color: var(--text);
+        }
+        
+        .message-content {
+            background: white;
+            padding: 12px 16px;
+            border-radius: 16px;
+            max-width: 70%;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+        
+        .user-message .message-content {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+        
+        .message-content p {
+            margin: 0 0 8px 0;
+        }
+        
+        .message-content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .message-content ul {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+        
+        .message-content li {
+            margin: 4px 0;
+        }
+        
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 12px;
+        }
+        
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--primary);
+            animation: typing 1.4s infinite;
+        }
+        
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.4;
+            }
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+        }
+        
+        .chat-quick-replies {
+            padding: 12px 20px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            background: white;
+            border-top: 1px solid var(--border);
+        }
+        
+        .quick-reply-btn {
+            background: var(--gray-light);
+            border: 1px solid var(--border);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        
+        .quick-reply-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .chat-input-container {
+            padding: 16px 20px;
+            background: white;
+            border-top: 1px solid var(--border);
+        }
+        
+        .chat-input-wrapper {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 24px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+        
+        .chat-input:focus {
+            border-color: var(--primary);
+        }
+        
+        .chat-send-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .chat-send-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .chat-send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .chat-status {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 8px;
+            min-height: 16px;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .chat-window {
+                width: calc(100vw - 40px);
+                height: calc(100vh - 120px);
+                right: 20px;
+                bottom: 90px;
+            }
+            
+            .message-content {
+                max-width: 80%;
+            }
+        }
+    </style>
+
+    <script>
+        // Chatbot JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatToggleBtn = document.getElementById('chat-toggle-btn');
+            const chatWindow = document.getElementById('chat-window');
+            const chatCloseBtn = document.getElementById('chat-close-btn');
+            const chatClearBtn = document.getElementById('chat-clear-btn');
+            const chatInput = document.getElementById('chat-input');
+            const chatSendBtn = document.getElementById('chat-send-btn');
+            const chatMessages = document.getElementById('chat-messages');
+            const chatStatus = document.getElementById('chat-status');
+            const quickReplyBtns = document.querySelectorAll('.quick-reply-btn');
+            
+            let sessionId = 'session_' + Date.now();
+            let currentLanguage = 'en';
+            let lastPrediction = null;
+            
+            // Toggle chat window
+            chatToggleBtn.addEventListener('click', () => {
+                chatWindow.classList.toggle('hidden');
+                if (!chatWindow.classList.contains('hidden')) {
+                    chatInput.focus();
+                }
+            });
+            
+            chatCloseBtn.addEventListener('click', () => {
+                chatWindow.classList.add('hidden');
+            });
+            
+            // Clear conversation
+            chatClearBtn.addEventListener('click', async () => {
+                if (confirm('Clear conversation history?')) {
+                    try {
+                        await fetch('http://localhost:8000/chat/clear?session_id=' + sessionId, {
+                            method: 'POST'
+                        });
+                        chatMessages.innerHTML = '';
+                        addBotMessage('Conversation cleared. How can I help you?');
+                    } catch (error) {
+                        console.error('Clear error:', error);
+                    }
+                }
+            });
+            
+            // Send message
+            async function sendMessage(message) {
+                if (!message.trim()) return;
+                
+                // Add user message to UI
+                addUserMessage(message);
+                chatInput.value = '';
+                chatSendBtn.disabled = true;
+                
+                // Show typing indicator
+                const typingId = addTypingIndicator();
+                
+                try {
+                    const response = await fetch('http://localhost:8000/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            message: message,
+                            session_id: sessionId,
+                            disease_context: lastPrediction,
+                            language: currentLanguage
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    // Remove typing indicator
+                    removeTypingIndicator(typingId);
+                    
+                    if (data.success) {
+                        addBotMessage(data.response);
+                        chatStatus.textContent = '';
+                    } else {
+                        addBotMessage(data.response);
+                        if (data.error) {
+                            chatStatus.textContent = '⚠️ ' + data.error;
+                        }
+                    }
+                } catch (error) {
+                    removeTypingIndicator(typingId);
+                    addBotMessage('❌ Connection error. Make sure the backend server is running.');
+                    chatStatus.textContent = 'Error: ' + error.message;
+                }
+                
+                chatSendBtn.disabled = false;
+                chatInput.focus();
+            }
+            
+            // Add user message to chat
+            function addUserMessage(text) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'chat-message user-message';
+                messageDiv.innerHTML = `
+                    <div class="message-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="message-content">
+                        <p>${escapeHtml(text)}</p>
+                    </div>
+                `;
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // Add bot message to chat
+            function addBotMessage(text) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'chat-message bot-message';
+                
+                // Convert markdown-style formatting
+                const formattedText = formatBotMessage(text);
+                
+                messageDiv.innerHTML = `
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        ${formattedText}
+                    </div>
+                `;
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // Format bot message (simple markdown)
+            function formatBotMessage(text) {
+                // Split by double newlines for paragraphs
+                const paragraphs = text.split('\n\n');
+                let html = '';
+                
+                paragraphs.forEach(para => {
+                    if (para.trim().startsWith('-') || para.trim().startsWith('•')) {
+                        // Convert to list
+                        const items = para.split('\n').filter(line => line.trim());
+                        html += '<ul>';
+                        items.forEach(item => {
+                            const cleaned = item.replace(/^[-•]\s*/, '').trim();
+                            if (cleaned) html += `<li>${escapeHtml(cleaned)}</li>`;
+                        });
+                        html += '</ul>';
+                    } else if (para.trim()) {
+                        html += `<p>${escapeHtml(para.trim())}</p>`;
+                    }
+                });
+                
+                return html || `<p>${escapeHtml(text)}</p>`;
+            }
+            
+            // Add typing indicator
+            function addTypingIndicator() {
+                const typingDiv = document.createElement('div');
+                const id = 'typing_' + Date.now();
+                typingDiv.id = id;
+                typingDiv.className = 'chat-message bot-message';
+                typingDiv.innerHTML = `
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <div class="typing-indicator">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                `;
+                chatMessages.appendChild(typingDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                return id;
+            }
+            
+            // Remove typing indicator
+            function removeTypingIndicator(id) {
+                const element = document.getElementById(id);
+                if (element) element.remove();
+            }
+            
+            // Escape HTML
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+            
+            // Event listeners
+            chatSendBtn.addEventListener('click', () => {
+                sendMessage(chatInput.value);
+            });
+            
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessage(chatInput.value);
+                }
+            });
+            
+            // Quick reply buttons
+            quickReplyBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const message = btn.getAttribute('data-message');
+                    chatInput.value = message;
+                    sendMessage(message);
+                });
+            });
+            
+            // Update language when user switches
+            const langBtns = document.querySelectorAll('.lang-btn');
+            langBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (btn.textContent.includes('हिन्दी')) {
+                        currentLanguage = 'hi';
+                    } else {
+                        currentLanguage = 'en';
+                    }
+                });
+            });
+            
+            // Listen for predictions to provide context
+            window.addEventListener('predictionComplete', (e) => {
+                lastPrediction = e.detail;
+                
+                // Auto-suggest help
+                setTimeout(() => {
+                    if (chatWindow.classList.contains('hidden')) {
+                        chatToggleBtn.style.animation = 'pulse 1s ease-in-out 3';
+                    }
+                }, 2000);
+            });
+        });
+        
+        // CSS animation for pulse
+        const pulseStyle = document.createElement('style');
+        pulseStyle.textContent = `
+            @keyframes pulse {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+            }
+        `;
+        document.head.appendChild(pulseStyle);
+    </script>
+</body>
+</html>
