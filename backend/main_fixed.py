@@ -8,11 +8,13 @@ import numpy as np
 from io import BytesIO
 from PIL import Image
 import requests
-from deep_translator import GoogleTranslator, LibreTranslator
+from deep_translator import GoogleTranslator
 from deep_translator.exceptions import NotValidPayload, RequestError
 from typing import List
 import html
 import sys
+import time
+import asyncio
 
 # Import chatbot module (now in same directory)
 try:
@@ -31,7 +33,9 @@ origins = [
     "http://localhost",
     "http://localhost:3000",
     "http://localhost:5500",
-    "http://127.0.0.1:5500"
+    "http://localhost:5501",
+    "http://127.0.0.1:5500",
+    "http://127.0.0.1:5501"
 ]
 app.add_middleware(
     CORSMiddleware,
@@ -62,25 +66,45 @@ async def translate_text(payload: TranslationRequest):
     # If English requested, return original strings
     if target_lang == "en":
         return {"translations": payload.texts}
+    
     texts = [text or "" for text in payload.texts]
 
     try:
-        translations = GoogleTranslator(source="auto", target=target_lang).translate_batch(texts)
+        # Try Google Translator with retry logic
+        translator = GoogleTranslator(source="auto", target=target_lang)
+        translations = []
+        
+        # Translate in smaller batches to avoid rate limiting
+        batch_size = 10
+        for i in range(0, len(texts), batch_size):
+            batch = texts[i:i + batch_size]
+            try:
+                batch_translations = translator.translate_batch(batch)
+                translations.extend(batch_translations)
+                # Add delay between batches to avoid rate limiting
+                if i + batch_size < len(texts):
+                    await asyncio.sleep(0.2)
+            except Exception as batch_error:
+                # If batch fails, translate individually
+                for text in batch:
+                    try:
+                        translation = translator.translate(text) if text else text
+                        translations.append(translation)
+                        await asyncio.sleep(0.1)  # Small delay between individual requests
+                    except:
+                        translations.append(text)  # Fallback to original
+        
         translations = unescape_translations(translations, payload.texts)
         return {"translations": translations}
-    except (deep_translator.exceptions.NotValidPayload, deep_translator.exceptions.RequestError, requests.exceptions.RequestException) as primary_error:
-        fallback_url = os.getenv("LIBRE_TRANSLATE_URL", "https://libretranslate.com")
-        try:
-            translator = LibreTranslator(
-                source="auto",
-                target=target_lang,
-                base_url=fallback_url
-            )
-            translations = translator.translate_batch(texts)
-            translations = unescape_translations(translations, payload.texts)
-            return {"translations": translations}
-        except (NotValidPayload, RequestError) as fallback_error:
-            return {"error": f"Translation failed: {primary_error}; {fallback_error}", "translations": payload.texts}
+        
+    except Exception as e:
+        # If all translation fails, return original texts with error message
+        print(f"Translation error: {str(e)}")
+        return {
+            "translations": payload.texts,
+            "error": "Translation service temporarily unavailable. Showing original text.",
+            "success": False
+        }
 
 @app.get("/ping")
 async def ping():
